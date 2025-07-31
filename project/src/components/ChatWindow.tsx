@@ -30,6 +30,8 @@ const ChatWindow: React.FC = () => {
     scrollToBottom();
   }, [messages, isLoading]);
 
+  const GEMINI_API_KEY = "AIzaSyCl0elSbTj-L3NkRox5eQQgQVfymBD96IQ"; // Substitua pela sua chave
+
   const handleSendMessage = async (messageText: string) => {
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -41,28 +43,59 @@ const ChatWindow: React.FC = () => {
     setMessages(prev => [...prev, userMessage]);
     setIsLoading(true);
 
-    // Simular resposta da IA
-    setTimeout(() => {
-      const aiResponses = [
-        'Que interessante! Com base na sua preferência por perfumes doces para a noite, eu recomendaria fragrâncias com notas de baunilha, âmbar e frutas vermelhas. Você tem alguma marca preferida ou orçamento em mente?',
-        'Excelente escolha! Perfumes frescos são perfeitos para o dia a dia. Que tal algo com notas cítricas como bergamota e limão siciliano, ou prefere algo mais aquático com notas marinhas?',
-        'Adoro essa categoria! Perfumes amadeirados transmitem sofisticação e elegância. Você prefere algo mais intenso com sândalo e vetiver, ou mais suave com cedro e patchouli?',
-        'Que perfil interessante! Para ocasiões especiais, costumo recomendar fragrâncias marcantes. Você se inclina mais para algo floral intenso, oriental misterioso ou gourmand sedutor?'
-      ];
-
-      const randomResponse = aiResponses[Math.floor(Math.random() * aiResponses.length)];
-      
+    try {
+      const aiText = await fetchGeminiResponse(messageText, GEMINI_API_KEY);
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: randomResponse,
+        text: aiText,
         sender: 'ai',
         timestamp: new Date()
       };
-
       setMessages(prev => [...prev, aiMessage]);
-      setIsLoading(false);
-    }, 1500 + Math.random() * 1000); // Variação no tempo de resposta
+    } catch (error) {
+      setMessages(prev => [...prev, {
+        id: (Date.now() + 2).toString(),
+        text: 'Desculpe, houve um erro ao conectar com a IA.',
+        sender: 'ai',
+        timestamp: new Date()
+      }]);
+    }
+    setIsLoading(false);
   };
+
+  // Função para buscar a resposta da IA Gemini
+  async function fetchGeminiResponse(userText: string, apiKey: string): Promise<string> {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+    const body = {
+      contents: [
+        {
+          parts: [
+            {
+              text: "Você é uma assistente especialista em perfumes. Responda apenas perguntas relacionadas a perfumes, fragrâncias, dicas de uso, recomendações e curiosidades sobre o universo da perfumaria. Se a pergunta não for sobre perfume, responda educadamente que só pode responder sobre esse tema."
+            },
+            {
+              text: userText
+            }
+          ]
+        }
+      ]
+    };
+
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(body)
+    });
+
+    if (!response.ok) {
+      throw new Error("Erro ao conectar com a IA Gemini");
+    }
+
+    const data = await response.json();
+    return data?.candidates?.[0]?.content?.parts?.[0]?.text || "Desculpe, não consegui responder no momento.";
+  }
 
   return (
     <div className="flex-1 flex flex-col bg-gradient-to-br from-amber-50/30 to-rose-50/30">
