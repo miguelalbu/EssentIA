@@ -15,6 +15,9 @@ const Header: React.FC = () => {
         <p className="text-center mt-2 text-blue-800/70 text-sm font-medium">
           Seu assistente inteligente para descobrir o perfume perfeito
         </p>
+        <p className='text-center mt-1 text-blue-600/70 text-xs font-light'>
+          Desenvolvido por @luarr.cosmeticos
+        </p>
       </div>
     </header>
   );

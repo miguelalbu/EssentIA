@@ -30,7 +30,7 @@ const ChatWindow: React.FC = () => {
     scrollToBottom();
   }, [messages, isLoading]);
 
-  const GEMINI_API_KEY = "AIzaSyCl0elSbTj-L3NkRox5eQQgQVfymBD96IQ";
+  const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 
   const handleSendMessage = async (messageText: string) => {
     const userMessage: Message = {
