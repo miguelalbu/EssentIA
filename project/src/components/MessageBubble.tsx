@@ -20,23 +20,23 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ message }) => {
       <div className={`flex max-w-xs md:max-w-md lg:max-w-lg ${isUser ? 'flex-row-reverse' : 'flex-row'} items-start space-x-3`}>
         <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${isUser ? 'ml-3' : 'mr-3'} ${
           isUser 
-            ? 'bg-gradient-to-br from-amber-100 to-rose-100 border border-amber-200' 
-            : 'bg-gradient-to-br from-violet-100 to-indigo-100 border border-violet-200'
+            ? 'bg-gradient-to-br from-blue-100 to-pink-100 border border-blue-200' 
+            : 'bg-gradient-to-br from-pink-100 to-blue-100 border border-pink-200'
         }`}>
           {isUser ? (
-            <User className="h-4 w-4 text-amber-700" />
+            <User className="h-4 w-4 text-blue-700" />
           ) : (
-            <Bot className="h-4 w-4 text-violet-700" />
+            <Bot className="h-4 w-4 text-pink-700" />
           )}
         </div>
         
         <div className={`rounded-2xl px-4 py-3 shadow-sm border ${
           isUser 
-            ? 'bg-gradient-to-br from-amber-50 to-rose-50 border-amber-200 text-amber-900' 
-            : 'bg-white border-gray-200 text-gray-800'
+            ? 'bg-gradient-to-br from-blue-50 to-pink-50 border-blue-200 text-blue-900' 
+            : 'bg-white border-pink-200 text-pink-900'
         }`}>
           <p className="text-sm leading-relaxed">{message.text}</p>
-          <p className={`text-xs mt-2 ${isUser ? 'text-amber-600' : 'text-gray-500'}`}>
+          <p className={`text-xs mt-2 ${isUser ? 'text-blue-600' : 'text-pink-600'}`}>
             {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
           </p>
         </div>
